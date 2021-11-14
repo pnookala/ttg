@@ -1,0 +1,13 @@
+digraph "ttg/ttg/external/boost/v1.77.0/boost" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_af7e1e7ef5a2a9f13e30e27d1c3a93c9 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="v1.77.0" fontname="FreeSans", fontsize="10", URL="dir_af7e1e7ef5a2a9f13e30e27d1c3a93c9.html"]
+  subgraph clusterdir_579c34c927258d4d87fc541138bc97e7 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_579c34c927258d4d87fc541138bc97e7.html"];
+    dir_579c34c927258d4d87fc541138bc97e7 [shape=plaintext label="boost"];
+  dir_de3d4499b2b045e93e0f852da2232cc9 [shape=box label="callable_traits" fillcolor="white" style="filled" color="red" URL="dir_de3d4499b2b045e93e0f852da2232cc9.html"];
+  }
+  }
+}

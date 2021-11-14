@@ -1,0 +1,37 @@
+digraph "ttg/ttg/external/boost/v1.77.0/boost/callable_traits/detail/is_invocable_impl.hpp"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  Node1 [label="ttg/ttg/external/boost\l/v1.77.0/boost/callable\l_traits/detail/is_invocable\l_impl.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="boost/callable_traits\l/detail/config.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$config_8hpp_source.html",tooltip=" "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="type_traits",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node2 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="tuple",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node2 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="utility",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node2 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="cstdint",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node2 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node7 [label="boost/callable_traits\l/detail/polyfills/disjunction.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$disjunction_8hpp_source.html",tooltip=" "];
+  Node2 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node8 [label="boost/callable_traits\l/detail/polyfills/make\l_index_sequence.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$make__index__sequence_8hpp_source.html",tooltip=" "];
+  Node1 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node9 [label="boost/callable_traits\l/detail/forward_declarations.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$forward__declarations_8hpp_source.html",tooltip=" "];
+  Node9 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node9 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node10 [label="boost/callable_traits\l/detail/default_callable\l_traits.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$default__callable__traits_8hpp_source.html",tooltip=" "];
+  Node1 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node11 [label="boost/callable_traits\l/detail/utility.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$utility_8hpp_source.html",tooltip=" "];
+  Node11 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node11 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node12 [label="boost/callable_traits\l/detail/sfinae_errors.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$sfinae__errors_8hpp_source.html",tooltip=" "];
+  Node12 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node11 -> Node13 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node13 [label="boost/callable_traits\l/detail/qualifier_flags.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$qualifier__flags_8hpp_source.html",tooltip=" "];
+  Node13 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+}

@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="ttg::default_data_descriptor\l\< T, std::enable_if_t\< std\l::is_trivially_copyable\< T\l \>::value &&!detail::is_user\l_buffer_serializable_v\< T \> &&!ttg\l::has_split_metadata\< T \>::value \> \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structttg_1_1default__data__descriptor_3_01_t_00_01std_1_1enable__if__t_3_01std_1_1is__trivially6d298664b57071b3644938702529b99f.html",tooltip=" "];
+}

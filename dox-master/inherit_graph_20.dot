@@ -1,0 +1,12 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="ttg::detail::Traverse",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg_1_1detail_1_1_traverse.html",tooltip="Traverses a graph of TTs in depth-first manner following out edges."];
+  Node0 -> Node1 [dir="back",color="firebrick4",fontsize="10",style="solid",fontname="FreeSans"];
+  Node1 [label="ttg::Dot",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg_1_1_dot.html",tooltip="Prints the graph to a std::string in the format understood by GraphViz's dot program."];
+  Node0 -> Node2 [dir="back",color="firebrick4",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="ttg::Traverse\< TTVisitor,\l InVisitor, OutVisitor \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg_1_1_traverse.html",tooltip="Traverses a graph of ops in depth-first manner following out edges."];
+}

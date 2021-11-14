@@ -1,0 +1,11 @@
+digraph "ttg::BinarySpanningTree::child_keys"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="ttg::BinarySpanningTree\l::child_keys",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="ttg::BinarySpanningTree\l::parent_key",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg_1_1_binary_spanning_tree.html#a31c570498d5fa0e40944ef57ccfc8ef1",tooltip=" "];
+  Node2 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+}

@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="ttg::detail::value\l_copy_handler\< ttg::\lRuntime::PaRSEC \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structttg_1_1detail_1_1value__copy__handler_3_01ttg_1_1_runtime_1_1_pa_r_s_e_c_01_4.html",tooltip=" "];
+}

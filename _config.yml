@@ -1,0 +1,7 @@
+theme: jekyll-theme-minimal
+include:
+  - _documenting-_t_t_g.html
+  - _t_t_g-_build-_infrastructure.html
+  - _recommended-_workflow-_elements.html
+  - _c_i-_administration-_notes.html
+  - _coding-_standards.html

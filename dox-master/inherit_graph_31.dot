@@ -1,0 +1,14 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="ttg::TTBase",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg_1_1_t_t_base.html",tooltip="A base class for all template tasks."];
+  Node0 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node1 [label="ttg::SinkTT\< keyT,\l input_valueT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg_1_1_sink_t_t.html",tooltip="A data sink for one input."];
+  Node0 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="ttg::TTG\< input_terminals\lT, output_terminalsT \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg_1_1_t_t_g.html",tooltip="a template task graph implementation"];
+  Node0 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="ttg_madness::TT\< keyT,\l output_terminalsT, derived\lT, input_valueTs \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classttg__madness_1_1_t_t.html",tooltip=" "];
+}

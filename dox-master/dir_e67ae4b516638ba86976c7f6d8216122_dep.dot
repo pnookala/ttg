@@ -1,0 +1,9 @@
+digraph "ttg/ttg/base" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_eadfcb2e6dc630a96ad146c380f23e4d {
+    graph [ bgcolor="#ddddee", pencolor="black", label="ttg" fontname="FreeSans", fontsize="10", URL="dir_eadfcb2e6dc630a96ad146c380f23e4d.html"]
+  dir_e67ae4b516638ba86976c7f6d8216122 [shape=box, label="base", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_e67ae4b516638ba86976c7f6d8216122.html"];
+  }
+}

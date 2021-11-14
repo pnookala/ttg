@@ -1,0 +1,10 @@
+digraph "mpqc::Debugger::debug"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="mpqc::Debugger::debug",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="mpqc::Debugger::release",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1_debugger.html#af18b7e16e97d1ce30cc2aa226a247a1b",tooltip="Reverts the effect of handle(sig) , i.e. the Debugger will not be activated when sig is caught."];
+}

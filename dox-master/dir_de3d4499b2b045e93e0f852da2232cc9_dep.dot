@@ -1,0 +1,14 @@
+digraph "ttg/ttg/external/boost/v1.77.0/boost/callable_traits" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_579c34c927258d4d87fc541138bc97e7 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="boost" fontname="FreeSans", fontsize="10", URL="dir_579c34c927258d4d87fc541138bc97e7.html"]
+  subgraph clusterdir_de3d4499b2b045e93e0f852da2232cc9 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_de3d4499b2b045e93e0f852da2232cc9.html"];
+    dir_de3d4499b2b045e93e0f852da2232cc9 [shape=plaintext label="callable_traits"];
+  dir_da9e0ca90f94c02e564a6b72fa1e9331 [shape=box label="detail" fillcolor="white" style="filled" color="red" URL="dir_da9e0ca90f94c02e564a6b72fa1e9331.html"];
+  }
+  }
+  dir_de3d4499b2b045e93e0f852da2232cc9->dir_da9e0ca90f94c02e564a6b72fa1e9331 [headlabel="1", labeldistance=1.5 headhref="dir_000014_000015.html"];
+}

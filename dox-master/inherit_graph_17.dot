@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="ttg::detail::is_user\l_buffer_serializable\l\< T, Enabler \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structttg_1_1detail_1_1is__user__buffer__serializable.html",tooltip="is_user_buffer_serializable<T> evaluates to true if T can be serialized to a buffer using user-provid..."];
+}

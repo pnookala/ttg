@@ -1,0 +1,12 @@
+digraph "mpqc::Debugger::__traceback"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="mpqc::Debugger::__traceback",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="mpqc::detail::Backtrace\l::empty",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1detail_1_1_backtrace.html#a12ca6fe3fb1e75e76ff054384d3bf1b8",tooltip=" "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="mpqc::detail::Backtrace::str",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1detail_1_1_backtrace.html#a97d27bd13ee4439c181f58b69b4b0694",tooltip=" "];
+}

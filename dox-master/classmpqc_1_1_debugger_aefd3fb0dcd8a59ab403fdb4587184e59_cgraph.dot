@@ -1,0 +1,18 @@
+digraph "mpqc::Debugger::Debugger"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="mpqc::Debugger::Debugger",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Programmatic construction of Debugger."];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="mpqc::Debugger::default_cmd",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1_debugger.html#a9d300701a1afd231052bc95bb9f7f027",tooltip="Calls set_cmd with a hopefully suitable default."];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="mpqc::Debugger::set_cmd",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1_debugger.html#a0348965e839512d046e097894042aa6e",tooltip=" "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="mpqc::Debugger::handle\l_defaults",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1_debugger.html#a4498530be3e81d7355ab5e1a3b2d5e74",tooltip="This calls handle(int) with all of the major signals."];
+  Node4 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="mpqc::Debugger::handle",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1_debugger.html#ad0d04b2f2ce3e296bd25478b0704bb4c",tooltip="The Debugger will be activated when sig is caught."];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="mpqc::Debugger::set_exec",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classmpqc_1_1_debugger.html#afc1422f751270f66c54fd067c5195a64",tooltip=" "];
+}

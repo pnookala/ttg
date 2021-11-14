@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="ttg::default_data_descriptor\l\< T, std::enable_if_t\< ttg\l::has_split_metadata\< T \>::\lvalue \> \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structttg_1_1default__data__descriptor_3_01_t_00_01std_1_1enable__if__t_3_01ttg_1_1has__split__m7b97af3698ab80a6204d3eb38af1e244.html",tooltip=" "];
+}

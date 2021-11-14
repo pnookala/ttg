@@ -1,0 +1,9 @@
+digraph "ttg/ttg/madness" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_eadfcb2e6dc630a96ad146c380f23e4d {
+    graph [ bgcolor="#ddddee", pencolor="black", label="ttg" fontname="FreeSans", fontsize="10", URL="dir_eadfcb2e6dc630a96ad146c380f23e4d.html"]
+  dir_e1343a3dc90010149b86ffe6d9c5dcc4 [shape=box, label="madness", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_e1343a3dc90010149b86ffe6d9c5dcc4.html"];
+  }
+}
