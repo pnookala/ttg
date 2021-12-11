@@ -36,7 +36,7 @@ namespace ttg {
       std::vector<TerminalBase *> outs;  // In<keyT, valueT> or In<keyT, const valueT>
       std::vector<Out<keyT, valueT> *> ins;
 
-      Container<keyT, mapper_ret_type, valueT> container;
+      ttg::detail::ContainerWrapper<keyT, mapper_ret_type, valueT> container;
       mapper_function_type mapper_function;
 
       EdgeImpl() : name(""), outs(), ins() {}
@@ -44,7 +44,7 @@ namespace ttg {
       EdgeImpl(const std::string &name, bool is_pull = false) : name(name),
                 is_pull_edge(is_pull), outs(), ins() {}
 
-      EdgeImpl(const std::string &name, bool is_pull, Container<keyT, mapper_ret_type, valueT> &c,
+      EdgeImpl(const std::string &name, bool is_pull, ttg::detail::ContainerWrapper<keyT, mapper_ret_type, valueT> &c,
                mapper_function_type &mapper) :
         name(name),
         is_pull_edge(is_pull),
@@ -113,8 +113,8 @@ namespace ttg {
     Edge(const std::string name = "anonymous edge", bool is_pull = false) : p(1) {
       p[0] = std::make_shared<EdgeImpl>(name, is_pull);
     }
-  
-    Edge(const std::string name, bool is_pull, Container<keyT, mapper_ret_type, valueT> c,
+
+    Edge(const std::string name, bool is_pull, ttg::detail::ContainerWrapper<keyT, mapper_ret_type, valueT> c,
          mapper_function_type mapper,
          ttg::meta::detail::keymap_t<mapper_ret_type> ckeymap
          ) : p(1) {
@@ -140,7 +140,7 @@ namespace ttg {
       }
       return result;
     }
-    
+
     bool is_pull_edge() const {
       return p.at(0)->is_pull_edge;
     }
