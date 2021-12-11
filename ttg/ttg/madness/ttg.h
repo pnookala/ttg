@@ -325,7 +325,7 @@ namespace ttg_madness {
     cacheT cache;
 
    protected:
-     template <typename terminalT, std::size_t i, typename Key>
+    template <typename terminalT, std::size_t i, typename Key>
     void invoke_pull_terminal(terminalT &in, const Key &key, TTArgs *args) {
       if (in.is_pull_terminal) {
         if (in.mapper) {
@@ -351,7 +351,7 @@ namespace ttg_madness {
         } else {
           //throw error??
           ::ttg::print_error(world.rank(), ":", get_name(), " : ", key,
-                                   ": pull terminal does not have a mapper : ", i);
+                             ": pull terminal does not have a mapper : ", i);
           throw std::runtime_error("Pull terminal invoked without a mapper");
         }
       }
