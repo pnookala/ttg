@@ -10,7 +10,6 @@
 #include "ttg/util/trace.h"
 #include "ttg/util/diagnose.h"
 #include "ttg/terminal.h"
-#include "boost/callable_traits.hpp"
 
 namespace ttg {
 
