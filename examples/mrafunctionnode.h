@@ -186,12 +186,20 @@ namespace mra {
         static constexpr bool is_function_node = true;
         Key<NDIM> key; //< Key associated with this node to facilitate computation from otherwise unknown parent/child
         mutable T sum; //< If recurring up tree (e.g., in compress) can use this to also compute a scalar reduction
-        bool is_leaf; //< True if node is leaf on tree (i.e., no children).
+        std::array<bool, NFUNC> is_leaf; //< True if node is leaf on tree (i.e., no children).
         std::array<FixedTensor<T,K,NDIM>, NFUNC> coeffs; //< if !is_leaf these are junk (and need not be communicated)
         FunctionReconstructedNodes() = default; // Default initializer does nothing so that class is POD
-        FunctionReconstructedNodes(const Key<NDIM>& key) : key(key), sum(0.0), is_leaf(false) {}
+        FunctionReconstructedNodes(const Key<NDIM>& key) : key(key), sum(0.0), is_leaf{false} {}
         T normf() const {return (is_leaf ? coeffs.normf() : 0.0);}
-        bool has_children() const {return !is_leaf;}
+        bool has_children() const {
+          bool any_children = false;
+          for (auto i : range(NFUNC)) {
+            any_children = !is_leaf[i];
+            if (any_children) break;
+          }
+          return any_children;
+        }
+
     	//Can't make it a vector to keep the class as POD.
         std::array<std::array<FixedTensor<T, K, NDIM>, 1 << NDIM>, NFUNC> neighbor_coeffs;
         std::array<std::array<bool, 1 << NDIM>, NFUNC> is_neighbor_leaf;
@@ -216,12 +224,20 @@ namespace mra {
     public: // temporarily make everything public while we figure out what we are doing
         static constexpr bool is_function_node = true;
         Key<NDIM> key; //< Key associated with this node to facilitate computation from otherwise unknown parent/child
-        std::array<bool,Key<NDIM>::num_children> is_leaf; //< True if that child is leaf on tree
+        std::array<std::array<bool, Key<NDIM>::num_children>, NFUNC> is_leaf; //< True if that child is leaf on tree
         std::array<FixedTensor<T,2*K,NDIM>, NFUNC> coeffs; //< Always significant
         FunctionCompressedNodes() = default; // Default initializer does nothing so that class is POD
         FunctionCompressedNodes(const Key<NDIM>& key) : key(key) {}
         T normf() const {return coeffs.normf();}
-        bool has_children(size_t childindex) const {assert(childindex<Key<NDIM>::num_children); return !is_leaf[childindex];}
+        bool has_children(size_t childindex) const {
+          assert(childindex<Key<NDIM>::num_children);
+          bool any_children = false;
+          for (auto i : range(NFUNC)) {
+            any_children = !is_leaf[i][childindex];
+            if (any_children) break;
+          }
+          return any_children;
+        }
     };
 
     template <typename T, size_t K, Dimension NDIM, typename ostream>

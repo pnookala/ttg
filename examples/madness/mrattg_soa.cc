@@ -181,21 +181,31 @@ auto make_project(functorT& f,
                   We need to fix broadcast to support any ranges */
                for (auto child : children(key)) bcast_keys.push_back(child);
                ttg::broadcast<0>(bcast_keys, Control(), out);
-               for (auto i : range(NFUNC))
+               for (auto i : range(NFUNC)) {
                  coeffs[i] = T(1e7); // set to obviously bad value to detect incorrect use
-               nodes.is_leaf = false;
+                 nodes.is_leaf[i] = false;
+               }
              }
              else if (is_negligible<functorT,T,NDIM>(f, Domain<NDIM>::
                                                      template bounding_box<T>(key),
                                                      truncate_tol(key,thresh))) {
-               for (auto i : range(NFUNC))
+               for (auto i : range(NFUNC)) {
                  coeffs[i] = T(0.0);
-               nodes.is_leaf = true;
+                 nodes.is_leaf[i] = true;
+               }
              }
              else {
-               for (auto i : range(NFUNC))
-                 nodes.is_leaf = fcoeffs<functorT,T,K>(f, key, thresh, coeffs[i]); // cannot deduce K
-               if (!nodes.is_leaf) {
+               for (auto i : range(NFUNC)) {
+                 nodes.is_leaf[i] = fcoeffs<functorT,T,K>(f, key, thresh, coeffs[i]); // cannot deduce K
+               }
+               bool any_children = false;
+               for (auto i : range(NFUNC)) {
+                 if (!nodes.is_leaf[i]) {
+                   any_children = true;
+                   break;
+                 }
+               }
+               if (any_children) {
                  std::vector<Key<NDIM>> bcast_keys;
                  for (auto child : children(key)) bcast_keys.push_back(child);
                  ttg::broadcast<0>(bcast_keys, Control(), out);
@@ -216,11 +226,11 @@ void send_leaves_up(const Key<NDIM>& key,
                     cnodesOut<T,K,NDIM,NFUNC>>& out) {
     nodes.sum = 0.0;   //
     if (!nodes.has_children()) { // We are only interested in the leaves
-        if (key.level() == 0) {  // Tree is just one node
-            throw "not yet";
-        } else {
-          ttg::send<0>(key.parent(), nodes, out);
-        }
+      if (key.level() == 0) {  // Tree is just one node
+        throw "not yet";
+      } else {
+        ttg::send<0>(key.parent(), nodes, out);
+      }
     }
 }
 
@@ -246,7 +256,7 @@ void do_compress(const Key<NDIM>& key,
       FixedTensor<T,2*K,NDIM> s;
       for (size_t i : range(Key<NDIM>::num_children)) {
         s(child_slices[i]) = in.neighbor_coeffs[j][i];
-        result.is_leaf[i] = in.is_neighbor_leaf[j][i];
+        result.is_leaf[j][i] = in.is_neighbor_leaf[j][i];
         sumsq[j] += in.neighbor_sum[j][i]; // Accumulate sumsq from child difference coeffs
       }
       filter<T,K,NDIM>(s,d[j]);  // Apply twoscale transformation
@@ -320,8 +330,10 @@ void do_reconstruct(const Key<NDIM>& key,
     std::array<std::vector<Key<NDIM>>, 2> bcast_keys;
 
     FunctionReconstructedNodes<T,K,NDIM,NFUNC> r(key);
-    for (auto i : range(NFUNC)) r.coeffs[i] = T(0.0);
-    r.is_leaf = false;
+    for (auto i : range(NFUNC)) {
+      r.coeffs[i] = T(0.0);
+      r.is_leaf[i] = false;
+    }
     //::send<1>(key, r, out); // Send empty interior node to result tree
     bcast_keys[1].push_back(key);
 
@@ -329,14 +341,20 @@ void do_reconstruct(const Key<NDIM>& key,
     for (auto it=children.begin(); it!=children.end(); ++it) {
       const Key<NDIM> child= *it;
       r.key = child;
+      bool any_leaves = false;
       for (auto i : range(NFUNC)) {
         r.coeffs[i] = s[i](child_slices[it.index()]);
+        r.is_leaf[i] = nodes.is_leaf[i][it.index()];
       }
-      r.is_leaf = nodes.is_leaf[it.index()];
-      if (r.is_leaf) {
-        //::send<1>(child, r, out);
+      for (auto i : range(NFUNC)) {
+        if (r.is_leaf[i]) {
+          any_leaves = true;
+          break;
+        }
+      }
+      if (any_leaves)
+          //::send<1>(child, r, out);
         bcast_keys[1].push_back(child);
-      }
       else {
         //::send<0>(child, r.coeffs, out);
         bcast_keys[0].push_back(child);
@@ -493,10 +511,10 @@ void test2(T thresh = 1e-6) {
          for (auto i : range(NFUNC)) {
            //Update self values into the array.
            node.neighbor_coeffs[i][node.key.childindex()] = node.coeffs[i];
-           node.is_neighbor_leaf[i][node.key.childindex()] = node.is_leaf;
+           node.is_neighbor_leaf[i][node.key.childindex()] = node.is_leaf[i];
            node.neighbor_sum[i][node.key.childindex()] = node.sum;
            node.neighbor_coeffs[i][another.key.childindex()] = another.coeffs[i];
-           node.is_neighbor_leaf[i][another.key.childindex()] = another.is_leaf;
+           node.is_neighbor_leaf[i][another.key.childindex()] = another.is_leaf[i];
            node.neighbor_sum[i][another.key.childindex()] = another.sum;
          }
        });
