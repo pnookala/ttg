@@ -1092,8 +1092,6 @@ namespace ttg_madness {
       register_input_terminals(input_terminals, innames);
       register_output_terminals(output_terminals, outnames);
 
-      register_input_callbacks(std::make_index_sequence<numins>{});
-
       connect_my_inputs_to_incoming_edge_outputs(std::make_index_sequence<numins>{}, inedges);
       connect_my_outputs_to_outgoing_edge_inputs(std::make_index_sequence<numouts>{}, outedges);
       register_input_callbacks(std::make_index_sequence<numins>{});
