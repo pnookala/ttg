@@ -111,6 +111,10 @@ namespace ttg {
     template <typename... valuesT>
     Edge(const Edge<keyT, valuesT> &... edges) : p(0) {
       std::vector<Edge<keyT, valueT>> v = {edges...};
+      //Do not allow fusing of push and pull terminals
+      if (!std::all_of(v.begin(), v.end(), [](Edge<keyT, valueT> e){return !e.is_pull_edge();}))
+        throw std::runtime_error("Edge: fusing push and pull terminals is not supported.");
+
       for (auto &edge : v) {
         p.insert(p.end(), edge.p.begin(), edge.p.end());
       }
