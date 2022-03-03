@@ -2420,7 +2420,6 @@ namespace ttg_parsec {
       register_output_terminals(output_terminals, outnames);
 
       register_input_callbacks(std::make_index_sequence<numins>{});
-
       int i;
 
       memset(&self, 0, sizeof(parsec_task_class_t));
@@ -2516,6 +2515,8 @@ namespace ttg_parsec {
         : TT(name, innames, outnames, world, std::forward<keymapT>(keymap_), std::forward<priomapT>(priomap)) {
       connect_my_inputs_to_incoming_edge_outputs(std::make_index_sequence<numins>{}, inedges);
       connect_my_outputs_to_outgoing_edge_inputs(std::make_index_sequence<numouts>{}, outedges);
+      //DO NOT MOVE THIS - information about the number of pull terminals is only available after connecting the edges.
+      register_input_callbacks(std::make_index_sequence<numins>{});
     }
     template <typename keymapT = ttg::detail::default_keymap<keyT>,
               typename priomapT = ttg::detail::default_priomap<keyT>>
