@@ -33,7 +33,8 @@ namespace ttg {
       std::vector<TerminalBase *> outs;  // In<keyT, valueT> or In<keyT, const valueT>
       std::vector<Out<keyT, valueT> *> ins;
 
-      ttg::detail::ContainerWrapper<keyT, valueT> container;
+      ttg::detail::ContainerWrapper<keyT, valueT> container; //For pull terminals using lambdas
+      ttg::detail::TTMapper<keyT> mapper;//For pull TTs
 
       EdgeImpl() : name(""), outs(), ins() {}
 
@@ -43,6 +44,13 @@ namespace ttg {
         name(name),
         is_pull_edge(is_pull),
         container(c),
+        outs(),
+        ins() {}
+
+      EdgeImpl(const std::string &name, bool is_pull, ttg::detail::TTMapper<keyT> &m) :
+        name(name),
+        is_pull_edge(is_pull),
+        mapper(m),
         outs(),
         ins() {}
 
@@ -61,6 +69,7 @@ namespace ttg {
         }
         out->is_pull_terminal = is_pull_edge;
         static_cast<In<keyT, valueT>*>(out)->container = container;
+        static_cast<In<keyT, valueT>*>(out)->mapper = mapper;
         outs.push_back(out);
         try_to_connect_new_out(out);
       }
@@ -72,13 +81,16 @@ namespace ttg {
 
       void try_to_connect_new_out(TerminalBase *out) const {
         assert(out->get_type() != TerminalBase::Type::Write);  // out must be an In<>
-        if (out->is_pull_terminal) {
-          out->connect_pull_nopred(out);
-        }
-        else {
+        //else {
           for (auto in : ins)
             if (in && out) in->connect(out);
-        }
+          //}
+
+          if (out->is_pull_terminal) {
+            out->connect_pull(out);
+            //out->connect_pull_nopred(out);
+          }
+
       }
 
       ~EdgeImpl() {
@@ -106,6 +118,10 @@ namespace ttg {
     Edge(const std::string name, bool is_pull, ttg::detail::ContainerWrapper<keyT, valueT> c)
       : p(1) {
       p[0] = std::make_shared<EdgeImpl>(name, is_pull, c);
+    }
+
+    Edge(const std::string name, bool is_pull, ttg::detail::TTMapper<keyT> m) : p(1) {
+      p[0] = std::make_shared<EdgeImpl>(name, is_pull, m);
     }
 
     template <typename... valuesT>

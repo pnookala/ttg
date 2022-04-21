@@ -60,12 +60,6 @@ namespace ttg {
     /// This is called by the derived class's connect method
     void connect_base(TerminalBase *successor) { successors_.push_back(successor); connected = true; successor->connected = true;}
 
-    void connect_pull(TerminalBase *predecessor) {
-      predecessors_.push_back(predecessor);
-      predecessor->connected = true;
-      connected = true;
-    }
-
   public:
     /// Return ptr to containing tt
     TTBase *get_tt() const {
@@ -111,6 +105,12 @@ namespace ttg {
     //This is a hack, is there a better way?
     void connect_pull_nopred(TerminalBase *p) {
       p->connected = true;
+    }
+
+    void connect_pull(TerminalBase *predecessor) {
+      predecessors_.push_back(predecessor);
+      predecessor->connected = true;
+      connected = true;
     }
 
     /// Returns true if this terminal (input or output) is connected

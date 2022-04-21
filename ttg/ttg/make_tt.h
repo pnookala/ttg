@@ -110,6 +110,8 @@ class CallableWrapTTArgs
                      std::add_pointer_t<noref_funcT>,
                      noref_funcT> func;
 
+  using func_ret_t = boost::callable_traits::return_type_t<funcT>;
+
   template <typename Key, typename Tuple, std::size_t... S>
   void call_func(Key &&key, Tuple &&args_tuple, output_terminalsT &out, std::index_sequence<S...>) {
     using func_args_t = boost::callable_traits::args_t<funcT>;
@@ -163,9 +165,18 @@ class CallableWrapTTArgs
   };
 
   template <typename Key, typename ArgsTuple = input_refs_tuple_type>
-  std::enable_if_t<ttg::meta::is_empty_tuple_v<ArgsTuple> && !ttg::meta::is_void_v<Key>, void> op(
+  std::enable_if_t<ttg::meta::is_empty_tuple_v<ArgsTuple> && !ttg::meta::is_void_v<Key>
+                   && std::is_same_v<func_ret_t,void>, std::nullptr_t> op(
       Key &&key, output_terminalsT &out) {
     call_func(std::forward<Key>(key), out);
+    return nullptr;
+  };
+
+  template <typename Key, typename ArgsTuple = input_refs_tuple_type>
+  std::enable_if_t<ttg::meta::is_empty_tuple_v<ArgsTuple> && !ttg::meta::is_void_v<Key>
+                   && !std::is_same_v<func_ret_t, void>, func_ret_t> op(
+      Key &&key, output_terminalsT &out) {
+    return func(std::forward<Key>(key));
   };
 
   template <typename Key = keyT, typename ArgsTuple = input_refs_tuple_type>
@@ -284,6 +295,40 @@ auto make_tt(funcT &&func, const std::tuple<ttg::Edge<keyT, input_edge_valuesT>.
       "ttg::make_tt(func, inedges, outedges): last argument of func must be std::tuple<output_terminals_type>&");
 
   return std::make_unique<wrapT>(std::forward<funcT>(func), inedges, outedges, name, innames, outnames);
+}
+
+/*This method creates a pull TT. It does not have input edges.
+*The TT is invoked by calling the function using a task ID.
+*Pull TTs do no directly call send, but it is handled internally.
+*Instead the value is returned to the caller and it is sent to the successor internally.
+*/
+template <typename keyT, typename funcT, typename... input_edge_valuesT, typename... output_edgesT>
+auto make_pull_tt(funcT &&func,
+             const std::tuple<output_edgesT...> &outedges, const std::string &name = "wrapper",
+             const std::vector<std::string> &outnames =
+                 std::vector<std::string>(sizeof...(output_edgesT), "output")) {
+  using output_terminals_type = typename ttg::edges_to_output_terminals<std::tuple<output_edgesT...>>::type;
+
+  // TT needs actual types of arguments to func ... extract them and pass to CallableWrapTTArgs
+  // 1. func_args_t = {const input_keyT&}
+  using func_args_t = boost::callable_traits::args_t<funcT>;
+  using func_ret_t = boost::callable_traits::return_type_t<funcT>;
+  constexpr auto num_args = std::tuple_size_v<func_args_t>;
+  constexpr auto void_key = ttg::meta::is_void_v<keyT>;
+
+  static_assert(num_args == (void_key ? 0 : 1),
+                "ttg::make_pull_tt(func, outedges): func's # of args != 1, pull TTs must contain a single input argument.");
+
+  using wrapT = typename CallableWrapTTArgsUnwrapTuple<funcT, keyT, output_terminals_type, std::tuple<>>::type;
+  // not sure if we need this level of type checking ...
+  // TODO determine the generic signature of func
+  if constexpr (!void_key) {
+    static_assert(
+        std::is_same_v<std::tuple_element_t<0, func_args_t>, const keyT &>,
+        "ttg::make_tt(func): the argument of func must be const keyT& (unless keyT = void)");
+  }
+
+  return std::make_unique<wrapT>(std::forward<funcT>(func), std::tuple<>(), outedges, name, std::vector<std::string>(), outnames);
 }
 
 template <typename keyT, typename funcT, typename... input_valuesT, typename... output_edgesT>

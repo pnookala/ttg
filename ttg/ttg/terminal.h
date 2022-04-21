@@ -28,9 +28,10 @@ namespace ttg {
 
       ContainerWrapper() = default;
 
-      template<typename T, typename mapperT, typename keymapT, std::enable_if_t<!std::is_same<std::decay_t<T>,
-                                                          ContainerWrapper>{}, bool> = true>
-        //Store a pointer to the user's container in std::any, no copies
+      template<typename T, typename mapperT, typename keymapT,
+               std::enable_if_t<!std::is_same<std::decay_t<T>,
+                                              ContainerWrapper>{}, bool> = true>
+        //Store a pointer to the user's container, no copies
         ContainerWrapper(T &t, mapperT &&mapper,
                          keymapT &&keymap) : get([&t,mapper = std::forward<mapperT>(mapper)](keyT const &key) {
                                                    if constexpr (!std::is_class_v<T> && std::is_invocable_v<T, keyT>) {
@@ -44,6 +45,7 @@ namespace ttg {
                                                       return t.at(k);
                                                     }
                                                 }),
+                                             //TODO: put([]T::key_type key, valueT &value) {}),
                                             owner([&t, mapper = std::forward<mapperT>(mapper), keymap = std::forward<keymapT>(keymap)](keyT const &key) {
                                                     auto idx = mapper(key); //Mapper to map task ID to index of the data structure.
                                                     return keymap(idx);
@@ -70,7 +72,39 @@ namespace ttg {
       std::function<std::nullptr_t ()> get = nullptr;
       std::function<size_t ()> owner = nullptr;
     };
+
+      /* Wraps mapper for pull TTs.
+     * keyT - taskID
+    */
+    template<typename keyT>
+    struct TTMapper {
+      std::function<size_t (keyT const& key)> owner = nullptr;
+      std::function<keyT (keyT const& key)> index = nullptr;
+      bool set = false;
+      TTMapper() = default;
+
+      template<typename mapperT, typename keymapT, std::enable_if_t<!std::is_same<std::decay_t<mapperT>,
+                                                          TTMapper>{}, bool> = true>
+        TTMapper(mapperT &&mapper,
+                 keymapT &&keymap) : owner([mapper = std::forward<mapperT>(mapper), keymap = std::forward<keymapT>(keymap)](keyT const &key) {
+                                             auto idx = mapper(key); //Mapper to map task ID to index of the data structure.
+                                             return keymap(idx);
+                                           }),
+                                     index([mapper = std::forward<mapperT>(mapper)] (keyT const &key) {
+                                             return mapper(key);
+                                           }),
+                                     set(true)
+        {}
+    };
+
+    template<> struct TTMapper<void> {
+      std::function<size_t ()> owner = [](){ return 0; };
+    };
   } //namespace detail
+
+  //Forward declaration
+  template <typename keyT, typename valueT>
+  class Out;
 
   template <typename keyT = void, typename valueT = void>
   class In : public TerminalBase {
@@ -90,6 +124,7 @@ namespace ttg {
     using finalize_callback_type = meta::detail::finalize_callback_t<keyT>;
     static constexpr bool is_an_input_terminal = true;
     ttg::detail::ContainerWrapper<keyT, valueT> container;
+    ttg::detail::TTMapper<keyT> mapper;
 
    private:
     send_callback_type send_callback;
@@ -207,6 +242,30 @@ namespace ttg {
       }
     }
 
+    template <typename Key, size_t i>
+    void invoke_predecessor(const std::tuple<Key, Key> &keys) {
+      //TODO: What happens when there are multiple predecessors?
+      std::size_t s = 0;
+      bool found = false;
+      std::cout << "invoke_predecessor called\n";
+      for (auto && predecessor : predecessors_) {
+        //Find out which successor I am
+        /*for (auto&& successor : this->successors_) {
+          if (successor != this)
+            s++;
+          else {
+            found = true;
+            break;
+          }
+        }
+        if (found) {
+        std::cout << "Found the successor, invoking callback\n";*/
+          static_cast<Out<Key, void>*>(predecessor)->invoke_pulltask_callback(keys, i);
+          /*}
+            else throw std::runtime_error("Pull TT successor not found!");*/
+      }
+    }
+
     template <typename Key = keyT>
     std::enable_if_t<!meta::is_void_v<Key>,void>
     set_size(const Key &key, std::size_t size) {
@@ -249,8 +308,10 @@ namespace ttg {
                   "Out<keyT,valueT> assumes valueT is a non-decayable type");
     typedef Edge<keyT, valueT> edge_type;
     static constexpr bool is_an_output_terminal = true;
+    using pulltask_callback_type = meta::detail::pulltask_callback_t<keyT>;
 
    private:
+    pulltask_callback_type pulltask_callback;
     // No moving, copying, assigning permitted
     Out(Out &&other) = delete;
     Out(const Out &other) = delete;
@@ -283,6 +344,18 @@ namespace ttg {
       //If I am a pull terminal, add me as (in)'s predecessor
       if (is_pull_terminal)
         in->connect_pull(this);
+    }
+
+    void set_pulltask_callback(const pulltask_callback_type &pulltask_callback) {
+      this->pulltask_callback = pulltask_callback;
+    }
+
+    template <typename Key = keyT>
+    std::enable_if_t<!meta::is_void_v<Key>, void>
+    invoke_pulltask_callback(const Key& key, const std::size_t s) {
+      if (!pulltask_callback)
+        throw std::runtime_error("pull task callback not initialized");
+      pulltask_callback(key, s);
     }
 
     auto nsuccessors() const {
@@ -365,6 +438,18 @@ namespace ttg {
       }
       if (nullptr != move_successor) {
         static_cast<In<keyT, valueT> *>(move_successor)->send(key, std::forward<Value>(value));
+      }
+    }
+
+    template <typename Key = keyT, typename Value = valueT>
+    std::enable_if_t<meta::is_none_void_v<Key,Value> && std::is_same_v<Value,std::remove_reference_t<Value>>,void>
+    send_to(const Key &key, Value &&value, std::size_t i)
+    {
+      TerminalBase *successor = successors().at(i);
+      if (successor->get_type() == TerminalBase::Type::Read) {
+        static_cast<In<keyT, std::add_const_t<valueT>> *>(successor)->send(key, value);
+      } else if (successor->get_type() == TerminalBase::Type::Consume) {
+        static_cast<In<keyT, valueT> *>(successor)->send(key, value);
       }
     }
 

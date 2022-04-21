@@ -141,12 +141,13 @@ auto get_rightindex(const Key& key, int MB, int NB) {
 
 template <typename T>
 auto make_get_inputblock(std::unordered_map<Key, BlockMatrix<T>, pair_hash>& m, Edge<Key, BlockMatrix<T>>& input) {
-  auto f = [m](const Key &key) {
+  auto f = [&m](const Key &key) {
     auto [i, j] = key;
+    std::cout << "Get block " << i << " " << j << std::endl;
     return m.at(Key(i,j));
   };
 
-  return make_tt<Key>(f, edges(input), "get_inputblock", {"get_inputblock"});
+  return make_pull_tt<Key>(f, edges(input), "get_inputblock", {"get_inputblock"});
 }
 
 template <typename funcT, typename T>
@@ -161,7 +162,7 @@ auto make_wavefront0(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<T>
     int next_i = i + 1;
     int next_j = j + 1;
 
-    //std::cout << "wf0 " << i << " " << j << std::endl;
+    std::cout << "wf0 " << i << " " << j << std::endl;
     BlockMatrix<T> res = func(i, j, MB, NB, input, input, input, right0, bottom0);
 
     if (next_j == NB - 1)
@@ -196,7 +197,7 @@ auto make_wavefront1(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<T>
     int next_i = i + 1;
     int next_j = j + 1;
 
-    //std::cout << "wf1 " << i << " " << j << std::endl;
+    std::cout << "wf1 " << i << " " << j << std::endl;
     BlockMatrix<T> res;
     res = func(i, j, MB, NB, input, previous, previous, right0, bottom0);
 
@@ -246,7 +247,7 @@ auto make_wavefront1R(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<T
     int next_j = j + 1;
     if (i != MB - 1) std::cout << "Error in 1R, should only be triggered for last row\n";
 
-    //std::cout << "wf1R " << i << " " << j << std::endl;
+    std::cout << "wf1R " << i << " " << j << std::endl;
     BlockMatrix<T> res;
     res = func(i, j, MB, NB, input, top, top, right0, right0);
 
@@ -276,7 +277,7 @@ auto make_wavefront1B(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<T
     int next_i = i + 1;
     if (j != NB - 1) std::cout << "Error in 1B, should only be triggered for last column\n";
 
-    //std::cout << "wf1B " << i << " " << j << std::endl;
+    std::cout << "wf1B " << i << " " << j << std::endl;
     BlockMatrix<T> res;
     res = func(i, j, MB, NB, input, left, left, bottom0, bottom0);
 
@@ -309,7 +310,7 @@ auto make_wavefront2BR(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<
     int next_i = i + 1;
     int next_j = j + 1;
 
-    //std::cout << "wf2BR " << i << " " << j << std::endl;
+    std::cout << "wf2BR " << i << " " << j << std::endl;
     BlockMatrix<T> res;
     //    if (i == MB - 1 && j == NB - 1)
     //  res = func(i, j, MB, NB, input, left, top, input, input);
@@ -346,7 +347,7 @@ auto make_wavefront2R(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<T
     int next_j = j + 1;
     if (i != MB - 1) std::cout << "Error in 2R, should only be triggered for last row\n";
 
-    //std::cout << "wf2R " << i << " " << j << std::endl;
+    std::cout << "wf2R " << i << " " << j << std::endl;
     BlockMatrix<T> res;
     res = func(i, j, MB, NB, input, top, left, right0, right0);
 
@@ -377,7 +378,7 @@ auto make_wavefront2B(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<T
     int next_i = i + 1;
     if (j != NB - 1) std::cout << "Error in 2B, should only be triggered for last column\n";
 
-    //std::cout << "wf2B " << i << " " << j << std::endl;
+    std::cout << "wf2B " << i << " " << j << std::endl;
     BlockMatrix<T> res;
     res = func(i, j, MB, NB, input, top, left, bottom0, bottom0);
 
@@ -405,7 +406,7 @@ auto make_wavefront2L(const funcT& func, int MB, int NB, Edge<Key, BlockMatrix<T
     auto [i, j] = key;
     if (i != MB - 1 && j != NB - 1) std::cout << "Error in 2L, should only be triggered for last corner block\n";
 
-    //std::cout << "wf2L " << i << " " << j << std::endl;
+    std::cout << "wf2L " << i << " " << j << std::endl;
     BlockMatrix<T> res;
     res = func(i, j, MB, NB, input, top, left, input, input);
 
@@ -549,13 +550,14 @@ int main(int argc, char** argv) {
   Edge<Key, BlockMatrix<double>> bottom0("bottom0", true, {m, get_bottomindex_func, container_keymap});
   Edge<Key, BlockMatrix<double>> right0("right0", true, {m, get_rightindex_func, container_keymap});
 
-  Edge<Key, BlockMatrix<double>> block("block", true, {m, get_inputindex_func, container_keymap});
+  Edge<Key, BlockMatrix<double>> block("block", true, {get_inputindex_func, container_keymap});
   // OpBase::set_trace_all(true);
   OpBase::set_lazy_pull(false);
 
   auto i = initiator(n_brows, n_bcols, m, input0); //, input1BR, input2BR, input1R, input2R, input1B, input2B, input2L);
   auto s0 = make_wavefront0(stencil_computation<double>, n_brows, n_bcols, input0, toporleft, toporleftLR, toporleftLB,
                             bottom0, right0, result);
+  auto i1 = make_get_inputblock(m, block);
   auto s1 = make_wavefront1(stencil_computation<double>, n_brows, n_bcols, block, toporleft, bottom0, right0,
                             output1, output2, output1R, output1B, result);
   auto s1R = make_wavefront1R(stencil_computation<double>, n_brows, n_bcols, block, toporleftLR, output1R, output12R,
@@ -577,6 +579,7 @@ int main(int argc, char** argv) {
   //Have a singleton for keymap which can keep global data.
   if (world_size > 1) {
     i->set_keymap(keymap);
+    i1->set_keymap(keymap);
     s0->set_keymap(keymap);
     s1->set_keymap(keymap);
     s1R->set_keymap(keymap);
@@ -597,7 +600,7 @@ int main(int argc, char** argv) {
   if (ttg::default_execution_context().rank() == 0) {
     std::cout << "==== begin dot ====\n";
     std::cout << Dot()(i.get()) << std::endl;
-    std::cout << "==== end dot ====\n";
+    //std::cout << "==== end dot ====\n";
     beg = std::chrono::high_resolution_clock::now();
     i->invoke(Key(0, 0));
   }
@@ -607,8 +610,8 @@ int main(int argc, char** argv) {
     i->invoke(Key(my_rank,0));
   }*/
 
-  execute();
-  fence();
+  ttg::execute();
+  ttg::fence();
   if (ttg::default_execution_context().rank() == 0) {
     end = std::chrono::high_resolution_clock::now();
     std::cout << "TTG Execution Time (milliseconds) : "
