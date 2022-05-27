@@ -87,8 +87,8 @@ namespace ttg {
           //}
 
           if (out->is_pull_terminal) {
-            out->connect_pull(out);
-            //out->connect_pull_nopred(out);
+            if (static_cast<In<keyT, valueT>*>(out)->mapper.owner == nullptr)
+              out->connect_pull_nopred(out);
           }
 
       }

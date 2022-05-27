@@ -329,11 +329,11 @@ namespace ttg_madness {
     void invoke_pull_terminal(terminalT &in, const Key &key, TTArgs *args) {
       if (in.is_pull_terminal) {
         if (in.mapper.owner != nullptr) {
-          std::cout << in.get_name() << " do we come here?\n";
+          in.mapper.dest_key = key; //Store this for doing send operation later
+          in.mapper.successor_id = i;
           in.template invoke_predecessor<Key, i>(std::make_tuple(std::remove_reference_t<Key>(in.mapper.index(key)), std::remove_reference_t<Key>(key)));
         }
         else {
-          std::cout << in.get_name() << " or here?\n";
           auto owner = in.container.owner(key);
           if (owner != world.rank()) {
             get_terminal_data<i, Key>(owner, key);
@@ -381,26 +381,15 @@ namespace ttg_madness {
     template <typename Key, size_t i>
     std::enable_if_t<!::ttg::meta::is_void_v<Key> && ::ttg::meta::is_empty_tuple_v<input_values_tuple_type>, void>
     set_pull_arg(const std::tuple<Key, Key> &keys) {
-      std::cout << "set_pull_arg called\n";
       const Key &myKey = std::get<0>(keys);
       const Key &destKey = std::get<1>(keys);
-      /*auto &in = std::get<i>(output_terminals);
-        const auto owner = in.mapper.owner;
-        std::cout << "In puretask_pull_arg " << myKey.first << " " << myKey.second << std::endl;
-        if (owner != world.rank()) {
-        if (tracing()) ::ttg::print(world.rank(), ":", get_name(), ":", myKey, ": forwarding data request argument : ");
-
-        worldobjT::send(owner, &ttT::template set_pull_arg<keyT>, keys, i);
-        } else {*/
       if (tracing())
         ::ttg::print(world.rank(), ":", get_name(), " : ", myKey, ": received value for pull argument");
 
-      auto value = static_cast<derivedT *>(this)->op(myKey, output_terminals);
-      if constexpr (!std::is_same_v<std::remove_const_t<decltype(value)>, std::nullptr_t>) {
-          // Assuming a single output terminal, TODO - compile time check in make_tt!!
-          (std::get<0>(output_terminals)).send_to(destKey, std::remove_reference_t<decltype(value)>(value), i);
-        }
-      //}
+      TTArgs *args = new TTArgs(this->priomap(std::get<0>(keys))); //acc->second;
+      args->derived = static_cast<derivedT *>(this);
+      args->key = myKey;
+      world.impl().impl().taskq.add(args);
     }
 
     template <typename Key, size_t i>
